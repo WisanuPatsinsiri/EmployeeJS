@@ -2,26 +2,28 @@ const express = require('express')
 const Sequelize = require('sequelize')
 const app = express()
 
+
 app.use(express.json())
 
-const sequelize = new Sequelize('database' , 'username' , 'password',{
+
+const sequelize = new Sequelize('database','username','password',{
     host:"localhost",
     dialect:"sqlite",
-    storage:"./Database/Employee.sqlite"
+    storage:"./Database/TestSQEmployee.sqlite"
 })
 
-const Employee = sequelize.define("employee" , {
-    Employee_id :{
+const Employee = sequelize.define("employee",{
+    Employeeid :{
         type: Sequelize.INTEGER,
         autoIncrement:true,
         primaryKey: true
     },
     Name :{
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(30),
         allowNull: false 
     },
     Phone :{
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(10),
         allowNull: false        
     }, 
     Salary :{
@@ -29,9 +31,9 @@ const Employee = sequelize.define("employee" , {
         allowNull: false 
     },
     Post :{
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(20),
         allowNull: false        
-    }, 
+    },   
 })
 
 sequelize.sync()
@@ -45,12 +47,12 @@ app.get('/employees',(req,res)=>{
 })
 
 
-app.get('/employees/:Employee_id',(req,res)=>{
-    Employee.findByPk(req.params.id).then(employees =>{
-        if(!employees) {
-            res.status(404).send('employees_id not found')
+app.get('/employees/:id',(req,res)=>{
+    Employee.findByPk(req.params.id).then(employee =>{
+        if(!employee) {
+            res.status(404).send('employee not found')
         }else{
-            res.json(employees)
+            res.json(employee)
         }
     }).catch(err=>{
         res.status(500).send(err)
@@ -60,8 +62,8 @@ app.get('/employees/:Employee_id',(req,res)=>{
 
 
 app.post('/employees',(req,res)=>{
-    Employee.create(req.body).then(employees =>{
-        res.send(employees)
+    Employee.create(req.body).then(employee =>{
+        res.send(employee)
         
     }).catch(err=>{
         res.status(500).send(err)
@@ -69,13 +71,13 @@ app.post('/employees',(req,res)=>{
 })
 
 
-app.put('/employees/:Employee_id',(req,res)=>{
-    Employee.findByPk(req.params.id).then(employees =>{
-        if(!employees){
-            res.status.send('employees not found')
+app.put('/employees/:id',(req,res)=>{
+    Employee.findByPk(req.params.id).then(employee =>{
+        if(!employee){
+            res.status.send('employee not found')
         }else{
-            employees.update(req.body).then(()=>{
-                res.send(employees)
+            employee.update(req.body).then(()=>{
+                res.send(employee)
             }).catch(err=>{
                 res.status(500).send(err)
             })
@@ -86,12 +88,12 @@ app.put('/employees/:Employee_id',(req,res)=>{
 })
 
 
-app.delete('/employees/:Employee_id',(req,res)=>{
-    Employee.findByPk(req.params.id).then(employees =>{
-        if(!employees){
-            res.status.send('Bookn not found')
+app.delete('/employees/:id',(req,res)=>{
+    Employee.findByPk(req.params.id).then(employee =>{
+        if(!employee){
+            res.status.send('employee not found')
         }else{
-            employees.destroy().then(()=>{
+            employee.destroy().then(()=>{
                 res.send({})
             }).catch(err=>{
                 res.status(500).send(err)
@@ -102,5 +104,6 @@ app.delete('/employees/:Employee_id',(req,res)=>{
     })
 })
 
+
 const port = process.env.PORT || 3000
-app.listen(port,()=> console.log(`Now The Server is listening on port ${port}`))
+app.listen(port,()=> console.log(`Listening on port ${port}`))
